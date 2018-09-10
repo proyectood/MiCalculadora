@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,11 +27,17 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isEditInProgress = false;
 
+    private int minLength;
+    private int textSize;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        minLength = getResources().getInteger(R.integer.main_min_length);
+        textSize = getResources().getInteger(R.integer.main_input_textSize);
 
         configEditText();
     }
@@ -68,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
                 if (!isEditInProgress && Metodos.canReplaceOperator(charSequence)){
                     isEditInProgress = true;
                     etInput.getText().delete(etInput.getText().length()-2, etInput.getText().length()-1);
+                }
+                if (charSequence.length() > minLength){
+                    etInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize -
+                            (((charSequence.length() - minLength) * 2) + (charSequence.length() - minLength)));
+                } else {
+                    etInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
                 }
             }
 
